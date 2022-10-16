@@ -15,4 +15,27 @@
  * The above are the procedures to be followed to get a working
  * skeleton of the game.
  */
-fn main() {}
+use std::io;
+
+fn main() {
+    const EXPENSE: &str = "0";
+    const INCOME: &str = "1";
+    let mut action_type: String = String::new();
+    //let mut amount: String = String::new();
+
+    println!("**************** Expense Tracker in Rust ******************");
+    println!("Do you want to record expense or income?");
+    println!("0 -> Expense / 1 -> Income");
+
+    io::stdin()
+        .read_line(&mut action_type)
+        .expect("Error while fetching user input...");
+
+    if action_type.trim_end() == EXPENSE {
+        println!("chose to expend");
+    } else if action_type.trim_end() == INCOME {
+        println!("chose to add income");
+    } else {
+        println!("Unknown action");
+    }
+}
