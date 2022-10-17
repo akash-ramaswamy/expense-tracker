@@ -1,5 +1,9 @@
+use std::env;
+
 pub const EXPENSE: char = '0';
 pub const INCOME: char = '1';
+pub const CURRENT_OS: &str = env::consts::OS;
+pub const LINUX_OS_DATA_FILE_PATH: &str = "/src/data.txt";
 // Error messages
 pub const ERR_MESS_TYPE_ACTION: &str = "Error while fetching user input for Expense / Income...";
 pub const ERR_MESS_UNKNOWN_ACTION: &str = "Unknown action, Exiting...";

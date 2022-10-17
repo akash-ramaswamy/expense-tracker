@@ -16,3 +16,15 @@ pub fn get_action() -> char {
         return 'E';
     }
 }
+
+pub fn get_current_directory()-> String {
+    use std::env;
+    use std::path::Path;
+
+    let current_dir = match env::current_dir() {
+        Ok(dir) => dir.display().to_string(),
+        Err(_) => Path::new("").display().to_string()
+    };
+
+    current_dir
+}

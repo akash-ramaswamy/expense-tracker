@@ -1,5 +1,9 @@
-mod utilities;
 mod constants;
+mod utilities;
+use std::fs::File;
+use std::fs::OpenOptions;
+use std::io::BufWriter;
+use std::io::{self, Write};
 /**
  * **************** Expense Tracker in Rust ******************
  * This is a simple project to track your expenses and save it
@@ -18,9 +22,12 @@ mod constants;
  * skeleton of the game.
  */
 use std::process;
-use std::io::{self, Write};
 
 fn main() {
+    if constants::CURRENT_OS != "linux" {
+        println!("This application only works in linux");
+        process::exit(0);
+    }
 
     println!("{}", constants::MESS_INTRO);
     println!("{}", constants::MESS_INTRO_2);
@@ -31,6 +38,17 @@ fn main() {
     if action_chosen == 'E' {
         process::exit(1);
     }
+
+    let file_path: &str =
+        &(utilities::get_current_directory() + constants::LINUX_OS_DATA_FILE_PATH);
+    println!("The file path: {}",file_path);
+    let data = "Some data!\n";
+    let f = OpenOptions::new()
+        .append(true)
+        .open(file_path)
+        .expect("Unable to open file");
+    let mut f = BufWriter::new(f);
+    f.write_all(data.as_bytes()).expect("Unable to write data");
 
     // Expense action
     if action_chosen == constants::EXPENSE {
@@ -46,7 +64,7 @@ fn main() {
 
         let amount: i32 = match amount.trim_end().parse::<i32>() {
             Ok(amount) => amount,
-            Err(_) => -1
+            Err(_) => -1,
         };
 
         if amount < 0 {
