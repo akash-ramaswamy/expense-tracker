@@ -1,5 +1,8 @@
-mod utilities;
 mod constants;
+mod utilities;
+
+use std::io::{self, Write};
+use std::process;
 /**
  * **************** Expense Tracker in Rust ******************
  * This is a simple project to track your expenses and save it
@@ -17,27 +20,29 @@ mod constants;
  * The above are the procedures to be followed to get a working
  * skeleton of the game.
  */
-use std::process;
-use std::io::{self, Write};
 
 fn main() {
-
-    println!("{}", constants::MESS_INTRO);
-    println!("{}", constants::MESS_INTRO_2);
-    print!("{}", constants::MESS_OPT_CHOOSE);
-    io::stdout().flush().expect(constants::ERR_MESS_GENERIC);
-
-    let action_chosen = utilities::get_action();
-    if action_chosen == 'E' {
-        process::exit(1);
+    if constants::CURRENT_OS != "linux" && constants::CURRENT_OS != "macos" {
+        println!("Unsupported OS..");
+        process::exit(0);
     }
 
-    // Expense action
-    if action_chosen == constants::EXPENSE {
-        // Get expense amount
+    println!("{}", constants::MESS_INTRO);
+    loop {
+        println!("{}", constants::MESS_INTRO_2);
+        print!("{}", constants::MESS_OPT_CHOOSE);
+        io::stdout().flush().expect(constants::ERR_MESS_GENERIC);
+
+        let action_chosen = utilities::get_action();
+        if action_chosen == 'E' {
+            process::exit(1);
+        } else if action_chosen == constants::EXIT {
+            process::exit(0);
+        }
+
         let mut amount: String = String::new();
 
-        print!("{}", constants::MESS_ENTER_EXP_AMT);
+        print!("{}", constants::MESS_ENTER_AMT);
         io::stdout().flush().expect(constants::ERR_MESS_GENERIC);
 
         std::io::stdin()
@@ -46,7 +51,7 @@ fn main() {
 
         let amount: i32 = match amount.trim_end().parse::<i32>() {
             Ok(amount) => amount,
-            Err(_) => -1
+            Err(_) => -1,
         };
 
         if amount < 0 {
@@ -54,6 +59,20 @@ fn main() {
             process::exit(1);
         }
 
-        println!("Entered amount: {}", amount);
+        let action = match action_chosen {
+            constants::EXPENSE => "Expense",
+            constants::INCOME => "Income",
+            _ => "",
+        };
+
+        println!("Rs.{} {} recorded successfully!\n\n", amount, action);
+
+        let data = utilities::get_transaction_data(
+            amount,
+            action_chosen,
+            utilities::get_current_timestamp(),
+        );
+
+        utilities::write_transaction(data);
     }
 }
