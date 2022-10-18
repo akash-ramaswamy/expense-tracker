@@ -46,10 +46,16 @@ pub fn write_transaction(data: String) {
     use std::fs::OpenOptions;
     use std::io::BufWriter;
     use std::io::Write;
+    use std::path::Path;
 
     let file_path: &str = &(get_current_directory() + crate::constants::LINUX_OS_DATA_FILE_PATH);
 
+    if Path::new(file_path).exists() == false {
+        println!("The file doesn't exist, tried to verify: {}", file_path);
+        // process::exit(1);
+    }
     let file = OpenOptions::new()
+        .create(true)
         .append(true)
         .open(file_path)
         .expect(crate::constants::ERR_MESS_FOPEN);
